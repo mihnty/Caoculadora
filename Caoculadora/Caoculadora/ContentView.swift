@@ -1,15 +1,14 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var years: Int? = nil
-    @State var months: Int? = nil
+    @State var years: Int?
+    @State var months: Int?
     @State var result: Int?
-    let portes = ["Pequeno", "Médio", "Grande"]
-    @State var porte: String = "Pequeno"
+    @State var porteSelecionado: Porte = .pequeno
     
     private var color: Color = .init(red: 0x4F/0xFF, green: 0x46/0xFF, blue: 0xE5/0xFF)
     private var color1: Color = .init(red: 0xC7/0xFF, green: 0xD2/0xFF, blue: 0xFE/0xFF)
-    
+
     var body: some View {
         VStack (spacing: 24) {
             ZStack {
@@ -24,7 +23,7 @@ struct ContentView: View {
                         .foregroundColor(.white)
                         .padding(.top, 48)
                     Text("Cãoculadora")
-                        .font(.system(.title, design: .rounded))
+                        .font(.header4)
                         .fontWeight(.heavy)
                         .foregroundColor(Color.white)
                         .padding(.top, 48)
@@ -34,12 +33,11 @@ struct ContentView: View {
             }
             VStack(alignment: .leading, spacing: 32) {
                 Text("Qual a idade do seu cão?")
-                    .font(.system(.title2, design: .rounded))
-                    .fontWeight(.bold)
+                    .font(.header5)
                     .foregroundColor(color)
                 VStack (alignment: .leading, spacing: 8) {
                     Text("Anos")
-                        .font(.system(.headline, design: .rounded))
+                        .font(.body1)
                     ZStack {
                         TextField("Digite os anos completos aqui", value: $years, format: .number)
                             .foregroundColor(color)
@@ -49,7 +47,7 @@ struct ContentView: View {
                 }
                 VStack (alignment: .leading, spacing: 8) {
                     Text("Meses")
-                        .font(.system(.headline, design: .rounded))
+                        .font(.body1)
                     ZStack {
                         TextField("Digite os meses aqui", value: $months, format: .number)
                             .foregroundColor(color)
@@ -60,10 +58,10 @@ struct ContentView: View {
                 }
                 VStack (alignment: .leading, spacing: 8) {
                     Text("Porte")
-                        .font(.system(.headline, design: .rounded))
-                    Picker("Porte", selection: $porte) {
-                        ForEach(portes, id: \.self) { porte in
-                            Text(porte)
+                        .font(.body1)
+                    Picker("Porte", selection: $porteSelecionado) {
+                        ForEach(Porte.allCases, id: \.self) { porte in
+                            Text(porte.rawValue)
                                 .tag(porte)
                         }
                     }
@@ -77,15 +75,13 @@ struct ContentView: View {
             .padding()
             if let result {
                 Text("Seu cachorro tem, em idade humana...")
-                    .font(.system(.headline, design: .rounded))
-                    .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                    .font(.body1)
                     .foregroundColor(color)
                     .padding()
                 Text("\(result) anos!")
-                    .font(.system(.largeTitle, design: .rounded))
-                    .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                    .font(.display)
                     .foregroundColor(color)
-                    .padding(.vertical, 32)
+                    .padding()
             } else {
                 Image(.doggo)
                     .resizable()
@@ -118,7 +114,7 @@ struct ContentView: View {
             print("Algum campo tem que ter valor maior que zero!")
             return
         }
-        result = (years + months/12) * 7
+        result = porteSelecionado.conversaoDeIdade(anos: years, meses: months)
     }
 }
 #Preview {
